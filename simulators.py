@@ -5,22 +5,14 @@ import random
 import copy
 from abc import ABC, abstractmethod
 
-team_2 = ["CH Gayle", "MA Agarwal", "V Kohli", "AB de Villiers", "LA Pomersbach",
-       "SS Tiwary", "DL Vettori", "S Aravind", "A Mithun", "Z Khan",
-       "J Syed Mohammad"]
-team_1 = ["MEK Hussey", "M Vijay", "SK Raina", "S Badrinath", "WP Saha",
-       "MS Dhoni", "DJ Bravo", "JA Morkel", "R Ashwin", "SB Jakati",
-       "DE Bollinger"]
 
 class AbstractSimulator(ABC):
 
-    @abstractmethod
-    def toss(self):
-        pass
-
+    @classmethod
     def fixed_order(team, batsmen_thus_far):
         return team[len(batsmen_thus_far)]
 
+    @classmethod
     def random_pick(team, prev_bowler):
 
         bowler_list = copy.deepcopy(team.bowler_list)
@@ -33,7 +25,6 @@ class AbstractSimulator(ABC):
                 bowler_list.remove(bowler)
 
         return np.random.choice(bowler_list)[0]
-
 
 
 class SimplisticSimulator(AbstractSimulator):
@@ -100,8 +91,8 @@ class SimplisticSimulator(AbstractSimulator):
     def play_match(self, to_file=False, out_folder=None):
         toss_statement = self.toss()
 
-        self.assign_probabilities(self.team_1, self.team_2.bowler_list)
-        self.assign_probabilities(self.team_2, self.team_1.bowler_list)
+        self.assign_probabilities(self.team_1, self.team_2)
+        self.assign_probabilities(self.team_2, self.team_1)
 
         self.play_first_innings()
         self.play_second_innings()
@@ -122,12 +113,12 @@ class SimplisticSimulator(AbstractSimulator):
 
 
 
-    def assign_probabilities(self, team_1, team_2_bowlers, eps = 1e-9):
+    def assign_probabilities(self, team_1, team_2, eps = 1e-9):
 
 
         # Tables have (batsmen, bowler) pairs as keys and probabilities as values
         for batsman_name in team_1.lineup:
-            for bowler_name in team_2_bowlers:
+            for bowler_name in team_2.bowlers_list:
                 bat_srs = team_1.players[batsman_name].batting_stats
                 bowl_srs = team_2.players[bowler_name].bowling_stats
 
@@ -183,7 +174,8 @@ class SimplisticSimulator(AbstractSimulator):
 
 
 
-    def play_first_innings(self, next_bat=super().fixed_order, next_bowl=super().random_pick, id=1):
+    def play_first_innings(self, next_bat=AbstractSimulator.fixed_order,
+                           next_bowl=AbstractSimulator.random_pick, id=1):
         # First Innings
 
         # Openers
@@ -262,7 +254,8 @@ class SimplisticSimulator(AbstractSimulator):
                 elif self.bowl_choices[ball] == "Out":
                     # OUT
                     legal_balls += 1
-                    dismissal_type = random.choices(self.valid_dismissals, weights=self.dismissal_tables[(striker, curr_bowler)])[0]
+                    dismissal_type = random.choices(self.valid_dismissals,
+                                                    weights=self.dismissal_tables[(striker, curr_bowler)])[0]
                     delivery["player_dismissed"] = striker
                     delivery["dismissal_kind"] = dismissal_type
 
@@ -431,12 +424,12 @@ class SimplisticSimulator(AbstractSimulator):
     def write_to_file(self, prefix):
         id  = self.deliveries[0]["match_id"]
 
-        filename = f"Match_{id}_{team_1.name}_vs_{team_2.name}Match_{id}.txt"
+        filename = f"Match_{id}_{self.team_1.name}_vs_{self.team_2.name}.txt"
         i = 0
         while filename in os.listdir(prefix):
             i += 1
 
-        filename = prefix + f"Match_{id + i}_{team_1.name}_vs_{team_2.name}Match_{id}.txt"
+        filename = prefix + f"Match_{id + i}_{self.team_1.name}_vs_{self.team_2.name}.txt"
 
         self.file_lines.append("First Innings:")
         separator = "--------------"
