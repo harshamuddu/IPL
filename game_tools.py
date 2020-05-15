@@ -4,18 +4,22 @@ class Player:
         self.name = name
 
         bat_srs = batsmen_df[batsmen_df["Name"] == name]
-        bowl_srs = batsmen_df[bowlers_df["Name"] == name]
+        bowl_srs = bowlers_df[bowlers_df["Name"] == name]
 
         self.batting_stats = bat_srs.to_dict()
         self.bowling_stats = bowl_srs.to_dict()
 
-        for k, v in self.batting_stats:
+        for k, v in self.batting_stats.items():
             if v == {}:
                 self.batting_stats[k] = 0
+            else:
+                self.batting_stats[k] = list(v.values())[0]
 
-        for k, v in self.bowling_stats:
+        for k, v in self.bowling_stats.items():
             if v == {}:
                 self.bowling_stats[k] = 0
+            else:
+                self.bowling_stats[k] = list(v.values())[0]
 
 class Team:
 
@@ -36,10 +40,10 @@ class Team:
             assert wk in lineup
 
 
-    def set_bowlers(self, bowlers_df, cutoff=60):
+    def set_bowlers(self, cutoff=60):
         self.bowler_list = []
         for player in self.lineup:
-            if bowlers_df[bowlers_df["Name"] == player]["Balls Bowled"] >= cutoff:
+            if self.players[player].bowling_stats["Balls Bowled"] >= cutoff:
                 self.bowler_list.append(player)
 
 
@@ -47,7 +51,7 @@ class Team:
         for player in self.lineup:
             self.players[player] = Player(player, batsmen_df, bowlers_df)
 
-        self.set_bowlers(bowlers_df)
+        self.set_bowlers()
 
 
 
