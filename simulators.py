@@ -207,8 +207,8 @@ class SimplisticSimulator(AbstractSimulator):
 				delivery["batsman"] = striker
 				delivery["non_striker"] = non_striker
 				delivery["bowler"] = curr_bowler
-				delivery["batting_team"] = bat_team
-				delivery["bowling_team"] = bowl_team
+				delivery["batting_team"] = bat_team.name
+				delivery["bowling_team"] = bowl_team.name
 				delivery["match_id"] = self.match.match_id
 				delivery["inning"] = innings
 
@@ -252,8 +252,6 @@ class SimplisticSimulator(AbstractSimulator):
 					if self.match.summary[bat_team]["Wickets"] < 10:
 						striker = next_bat(bat_team, batsmen_thus_far)
 						batsmen_thus_far.append(striker)
-					else:
-						break
 
 
 				elif Match.ball_choices[ball] == "No Ball":

@@ -208,11 +208,11 @@ class Match:
 
             if curr_over != prev_ball_over:
                 file_lines.append(f"{name}: {runs}/{wkts} after {prev_ball_over} ov")
-                file_lines.append(Match.separator)
                 if innings == 2:
                     file_lines.append(f"{name} need " +
                                       f"{target - runs} runs" +
                                       f" in {120 - (6 * prev_ball_over)} balls to win.")
+                file_lines.append(Match.separator)
 
             bowler = delivery["bowler"]
             if bowler not in bowl_order:

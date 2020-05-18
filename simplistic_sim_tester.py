@@ -176,21 +176,29 @@ else:
 batsmen_df = pd.read_pickle("batsmendf.pickle")
 bowlers_df = pd.read_pickle("bowlersdf.pickle")
 
+rcb_lineup = ["CH Gayle",
+              "MA Agarwal",
+              "V Kohli",
+              "AB de Villiers",
+              "LA Pomersbach",
+              "SS Tiwary",
+              "DL Vettori",
+              "S Aravind",
+              "A Mithun",
+              "Z Khan",
+              "J Syed Mohammad"]
 
-
-rcb_lineup = ["CH Gayle", "MA Agarwal", "V Kohli", "AB de Villiers", "LA Pomersbach",
-       "SS Tiwary", "DL Vettori", "S Aravind", "A Mithun", "Z Khan",
-       "J Syed Mohammad"]
-csk_lineup = ["MEK Hussey", "M Vijay", "SK Raina", "S Badrinath", "WP Saha",
-       "MS Dhoni", "DJ Bravo", "JA Morkel", "R Ashwin", "SB Jakati",
-       "DE Bollinger"]
-
-
-rcb = Team("Royal Challengers Bangalore", rcb_lineup, abbrev="RCB", captain="DL Vettori", wk="AB de Villiers")
-csk = Team("Chennai Super Kings", csk_lineup, abbrev="CSK", captain="MS Dhoni", wk="MS Dhoni")
-
-rcb.generate_team(batsmen_df, bowlers_df)
-csk.generate_team(batsmen_df, bowlers_df)
+csk_lineup = ["MEK Hussey",
+              "M Vijay",
+              "SK Raina",
+              "S Badrinath",
+              "WP Saha",
+              "MS Dhoni",
+              "DJ Bravo",
+              "JA Morkel",
+              "R Ashwin",
+              "SB Jakati",
+              "DE Bollinger"]
 
 mi_lineup = ["SR Tendulkar",
              "AC Blizzard",
@@ -217,13 +225,21 @@ kkr_lineup = ["JH Kallis",
               "Iqbal Abdulla"]
 
 
+rcb = Team("Royal Challengers Bangalore", rcb_lineup, abbrev="RCB", captain="DL Vettori", wk="AB de Villiers")
+csk = Team("Chennai Super Kings", csk_lineup, abbrev="CSK", captain="MS Dhoni", wk="MS Dhoni")
+
+rcb.generate_team(batsmen_df, bowlers_df)
+csk.generate_team(batsmen_df, bowlers_df)
+
+
+
+
 mi = Team("Mumbai Indians", mi_lineup, abbrev="MI", captain="SR Tendulkar", wk = "AT Rayudu")
 kkr = Team("Kolkata Knight Riders", kkr_lineup, abbrev="KKR", captain="G Gambhir", wk="SP Goswami")
 mi.generate_team(batsmen_df, bowlers_df)
 kkr.generate_team(batsmen_df, bowlers_df)
 
 ss1 = SimplisticSimulator(mi, kkr)
-#ss1.play_match(to_file=True, out_folder=prefix)
 ss1.play_matches(10, to_file=True, out_folder=prefix)
 
 ss2 = SimplisticSimulator(mi, rcb)
